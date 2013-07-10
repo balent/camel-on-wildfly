@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!-- START SNIPPET: e1 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+
+        <route>
+            <!-- incoming requests from the servlet is routed -->
+            <from uri="servlet:///hello-multicast-request"/>
+            <setExchangePattern pattern="InOnly"/>
+            <convertBodyTo type="java.lang.String"/>
+            <multicast parallelProcessing="true">
+                <to uri="seda:b"/>
+                <to uri="seda:c"/>
+                <to uri="seda:d"/>
+            </multicast>
+        </route>
+        <route>
+            <from uri="servlet:///hello-multicast-response1"/>
+            <pollEnrich uri="seda:b"/>
+            <transform>
+                <simple>${body} 1</simple>
+            </transform>
+        </route>
+        <route>
+            <from uri="servlet:///hello-multicast-response2"/>
+            <pollEnrich uri="seda:c"/>
+            <transform>
+                <simple>${body} 2</simple>
+            </transform>
+        </route>
+        <route>
+            <from uri="servlet:///hello-multicast-response3"/>
+            <pollEnrich uri="seda:d"/>
+            <transform>
+                <simple>${body} 3</simple>
+            </transform>
+        </route>
+    </camelContext>
+
+</beans>
+        <!-- END SNIPPET: e1 -->
