@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <routes xmlns="http://camel.apache.org/schema/spring">
+
+        <route>
+            <!-- incoming requests from the servlet is routed -->
+            <from uri="timer://hellotimernospring?period=5000&amp;repeatCount=4"/>
+            <setExchangePattern pattern="InOnly"/>
+            <transform>
+                <constant>Hello World!</constant>
+            </transform>
+            <to uri="seda://hellotimersedanospring"/>
+        </route>
+        <route>
+            <from uri="servlet:///hello-timer-responseno-spring"/>
+            <pollEnrich uri="seda://hellotimersedanospring"/>
+        </route>
+    </routes>

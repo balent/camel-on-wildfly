@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+
+    <route>
+        <from uri="servlet:///hello-slip-no-spring-request"/>
+        <setExchangePattern pattern="InOnly"/>
+        <convertBodyTo type="java.lang.String"/>
+        <routingSlip>
+            <header>helloslip</header>
+        </routingSlip>
+    </route>
+    <route>
+        <from uri="direct:a"/>
+        <transform>
+            <simple>${body} A</simple>
+        </transform>
+    </route>
+    <route>
+        <from uri="direct:b"/>
+        <transform>
+            <simple>${body} B</simple>
+        </transform>
+    </route>
+    <route>
+        <from uri="direct:c"/>
+        <transform>
+            <simple>${body} C</simple>
+        </transform>
+    </route>
+</routes>

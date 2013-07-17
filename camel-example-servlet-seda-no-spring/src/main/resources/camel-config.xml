@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+    <route>
+        <!-- incoming requests from the servlet is routed -->
+        <from uri="servlet:///hello-seda-no-spring-request"/>
+        <setExchangePattern pattern="InOnly"/>
+        <transform>
+            <constant>Hello World!</constant>
+        </transform>
+        <to uri="seda://hellonospringseda"/>
+    </route>
+    <route>
+        <from uri="servlet:///hello-seda-no-spring-response"/>
+        <pollEnrich uri="seda://hellonospringseda"/>
+    </route>
+</routes>

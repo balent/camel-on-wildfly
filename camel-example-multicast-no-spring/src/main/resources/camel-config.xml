@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+
+    <route>
+        <!-- incoming requests from the servlet is routed -->
+        <from uri="servlet:///hello-multicast-no-spring-request"/>
+        <setExchangePattern pattern="InOnly"/>
+        <convertBodyTo type="java.lang.String"/>
+        <multicast parallelProcessing="true">
+            <to uri="seda:nospringb"/>
+            <to uri="seda:nospringc"/>
+            <to uri="seda:nospringd"/>
+        </multicast>
+    </route>
+    <route>
+        <from uri="servlet:///hello-multicast-no-spring-response1"/>
+        <pollEnrich uri="seda:nospringb"/>
+        <transform>
+            <simple>${body} 1</simple>
+        </transform>
+    </route>
+    <route>
+        <from uri="servlet:///hello-multicast-no-spring-response2"/>
+        <pollEnrich uri="seda:nospringc"/>
+        <transform>
+            <simple>${body} 2</simple>
+        </transform>
+    </route>
+    <route>
+        <from uri="servlet:///hello-multicast-no-spring-response3"/>
+        <pollEnrich uri="seda:nospringd"/>
+        <transform>
+            <simple>${body} 3</simple>
+        </transform>
+    </route>
+</routes>

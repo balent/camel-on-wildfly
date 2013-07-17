@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+
+    <route>
+        <!-- incoming requests from the servlet is routed -->
+        <from uri="servlet:///hello-direct-no-spring-request"/>
+        <setExchangePattern pattern="InOnly"/>
+        <transform>
+            <constant>World</constant>
+        </transform>
+        <to uri="direct://hellodirectnospring"/>
+    </route>
+    <route>
+        <from uri="direct://hellodirectnospring"/>
+        <transform>
+            <simple>Hello ${body}!</simple>
+        </transform>
+        <to uri="seda://hellodirectnospringseda"/>
+    </route>
+    <route>
+        <from uri="servlet:///hello-direct-no-spring-response"/>
+        <pollEnrich uri="seda://hellodirectnospringseda"/>
+    </route>
+</routes>
