@@ -1,17 +1,30 @@
-Welcome to the Apache Camel on WildFly / JBoss EAP 6.1 Examples!
-================================================================
+Welcome to the Apache Camel on WildFly / JBoss EAP 6.1 / Tomcat 7 / JBoss EWS Examples!
+======================================================================================
 
 To run examples go through this steps:
 
-1. Download and start WildFly / JBoss EAP 6.1 distribution.
-2. Run "mvn clean install" in the examples root directory.
+Download and start WildFly / JBoss EAP 6.1 / Tomcat 7 / JBoss EWS  distribution.
+
+To automatically run all examples on WildFly or JBoss EAP 6.1 run:
+
+    "mvn -Pdeploy-jboss,it-tests clean install"
+
+To automatically run all examples on Tomcat 7 or JBoss EWS run:
+
+    "mvn -Pdeploy-tomcat,it-tests clean install"
 
 This will sequentially deploy each example to server, run test and undeploy
 application.
 
-To only package example run "mvn clean package" in example directory.
-To deploy packaged example run "mvn jboss-as:deploy" in example directory.
-To undeploy example run "mvn jboss-as:undeploy" in example directory.
+
+Tomcat 7 configuration:
+-----------------------
+
+Create user "tomcat" with password "tomcat" which will have role "manager-script".
+
+    <role rolename="manager-script"/>
+    <user username="tomcat" password="tomcat" roles="tomcat,manager-script"/
+
 
 ------------------------
 

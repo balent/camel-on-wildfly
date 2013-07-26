@@ -17,9 +17,8 @@ public class ServletDirectTestIT {
 
     @Test
     public void testServletDefaultResponse() throws Exception {
-        System.out.println("First request: " + doHttpRequest(URL_REQUEST));
+        doHttpRequest(URL_REQUEST);
         String responseString = doHttpRequest(URL_RESPONSE);
-        System.out.println("Second request: " + responseString);
         Assert.assertEquals(EXPECTED_RESPONSE, responseString);
     }
 

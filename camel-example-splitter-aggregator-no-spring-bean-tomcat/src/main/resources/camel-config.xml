@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes xmlns="http://camel.apache.org/schema/spring">
+
+    <route>
+        <!-- incoming requests from the servlet is routed -->
+        <from uri="servlet:///hello-splitter-no-spring-request"/>
+        <setExchangePattern pattern="InOnly"/>
+        <split>
+            <tokenize token=";"/>
+            <to uri="seda:hellosplitternospringseda"/>
+        </split>
+    </route>
+    <route>
+        <from uri="seda:hellosplitternospringseda"/>
+        <aggregate strategyRef="java:comp/env/bean/aggregator/StringAggregationStrategy" completionSize="3">
+            <correlationExpression>
+                <constant>constant</constant>
+            </correlationExpression>
+            <to uri="seda://nospringaggregated"/>
+        </aggregate>
+    </route>
+    <route>
+        <from uri="servlet:///hello-splitter-no-spring-response"/>
+        <pollEnrich uri="seda://nospringaggregated"/>
+    </route>
+</routes>

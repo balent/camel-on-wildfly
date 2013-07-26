@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>camel-example-splitter-aggregator-no-spring-ejb</artifactId>
-    <name>Camel :: Example :: Servlet Splitter Aggregator without Spring with EJB</name>
+    <name>Camel :: Example :: Splitter Aggregator EJB no Spring</name>
     <description>An example using Camel Splitter and Aggregator with Apache Tomcat</description>
     <packaging>war</packaging>
 

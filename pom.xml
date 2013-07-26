@@ -48,17 +48,15 @@
         <module>camel-example-servlet-file-no-spring</module>
         <module>camel-example-servlet-seda-no-spring</module>
         <module>camel-example-servlet-direct-no-spring</module>
-        <module>camel-example-splitter-aggregator-no-spring-ejb</module>
         <module>camel-example-multicast-no-spring</module>
         <module>camel-example-routing-slip-no-spring</module>
-        <module>camel-example-message-filter-no-spring-ejb</module>
         <module>camel-example-log-no-spring</module>
         <module>camel-example-timer-no-spring</module>
     </modules>
 
     <properties>
-        <skip.starting.camel.context>false</skip.starting.camel.context>
         <version.org.jboss.as.plugins.maven.plugin>7.3.Final</version.org.jboss.as.plugins.maven.plugin>
+        <tomcat7.maven.plugin.version>2.2-SNAPSHOT</tomcat7.maven.plugin.version>
     </properties>
 
     <build>
@@ -90,9 +88,6 @@
                     <includes>
                         <include>**/*Test.*</include>
                     </includes>
-                    <systemPropertyVariables>
-                        <skipStartingCamelContext>${skip.starting.camel.context}</skipStartingCamelContext>
-                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
@@ -102,50 +97,122 @@
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>${version.org.jboss.as.plugins.maven.plugin}</version>
-                    <executions>
-                        <execution>
-                            <id>deploy</id>
-                            <phase>pre-integration-test</phase>
-                            <goals>
-                                <goal>deploy</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>undeploy</id>
-                            <phase>post-integration-test</phase>
-                            <goals>
-                                <goal>undeploy</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>${tomcat7.maven.plugin.version}</version>
                     <configuration>
-                        <excludes>
-                            <exclude>**/*IT.java</exclude>
-                        </excludes>
+                        <username>tomcat</username>
+                        <password>tomcat</password>
+                        <path>/${project.artifactId}</path>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>integration-test</id>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <phase>integration-test</phase>
-                            <configuration>
-                                <excludes>
-                                    <exclude>none</exclude>
-                                </excludes>
-                                <includes>
-                                    <include>**/*IT.java</include>
-                                </includes>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>it-tests</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/*IT.java</exclude>
+                                </excludes>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>integration-test</id>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <phase>integration-test</phase>
+                                    <configuration>
+                                        <excludes>
+                                            <exclude>none</exclude>
+                                        </excludes>
+                                        <includes>
+                                            <include>**/*IT.java</include>
+                                        </includes>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy-jboss</id>
+            <modules>
+                <module>camel-example-splitter-aggregator-no-spring-ejb</module>
+                <module>camel-example-message-filter-no-spring-ejb</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.jboss.as.plugins</groupId>
+                            <artifactId>jboss-as-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>deploy</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>deploy</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>undeploy</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>undeploy</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy-tomcat</id>
+            <modules>
+                <module>camel-example-splitter-aggregator-no-spring-bean-tomcat</module>
+                <module>camel-example-message-filter-no-spring-bean-tomcat</module>
+            </modules>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.tomcat.maven</groupId>
+                            <artifactId>tomcat7-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>deploy</id>
+                                    <phase>pre-integration-test</phase>
+                                    <goals>
+                                        <goal>deploy</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>undeploy</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>undeploy</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>

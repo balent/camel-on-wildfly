@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<Context>
+    <Resource name="bean/filter/StringAggregationStrategy" auth="Container"
+              type="org.apache.camel.example.filter.StringAggregationStrategy"
+              factory="org.apache.naming.factory.BeanFactory"
+            />
+</Context>
